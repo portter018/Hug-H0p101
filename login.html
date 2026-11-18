@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เข้าสู่ระบบ | ระบบจัดการร้านสัตว์เลี้ยง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="wrap">
+  <form class="card login" id="loginForm">
+    <h1 style="font-size:22px">🐶 ระบบจัดการร้านสัตว์เลี้ยง</h1>
+    <p class="mute">เข้าสู่ระบบเพื่อจัดการคิวและบริการ</p>
+    <label for="u">อีเมล</label><input id="u" name="u" type="email" autocomplete="username" required>
+    <label for="p">รหัสผ่าน</label><input id="p" name="p" type="password" autocomplete="current-password" required>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" style="width:100%">เข้าสู่ระบบ</button>
+    <p class="mute" style="text-align:center">ยังไม่มีบัญชี? <a href="register.html" style="color:var(--pri)">สมัครสมาชิก</a></p>
+  </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

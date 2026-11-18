@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบจัดการร้านสัตว์เลี้ยง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== ตัวระบบหลังล็อกอิน ===== -->
+<div class="shell" id="appView" hidden>
+  <aside class="side">
+    <div class="brand"><span class="logo">🐶</span><b>ร้านสัตว์เลี้ยง</b></div>
+    <div class="menu" role="navigation" aria-label="เมนู">
+      <button data-tab="dash"><span aria-hidden="true">📊</span>ภาพรวม</button>
+      <button data-tab="book"><span aria-hidden="true">📅</span>จองคิว</button>
+      <button data-tab="queue"><span aria-hidden="true">🛎️</span>คิววันนี้</button>
+      <button data-tab="pay"><span aria-hidden="true">💳</span>การชำระเงิน</button>
+      <button data-tab="cust"><span aria-hidden="true">👤</span>ลูกค้า</button>
+      <button data-tab="svc"><span aria-hidden="true">🏷️</span>บริการและราคา</button>
+      <button data-tab="hist"><span aria-hidden="true">🕘</span>ประวัติ</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <h1 id="title">แผงควบคุม</h1>
+      <span><span id="userName"></span> <button class="btn alt sm" id="logoutBtn">ออกจากระบบ</button></span>
+    </div>
+
+    <main class="pad">
+
+      <!-- ภาพรวม / Dashboard -->
+      <section id="v-dash">
+        <div class="rng" role="group" aria-label="ช่วงเวลา">
+          <button data-range="today">วันนี้</button>
+          <button data-range="week">สัปดาห์</button>
+          <button data-range="month">เดือน</button>
+          <button data-range="year">ปี</button>
+        </div>
+        <div class="kg">
+          <div class="kc"><div class="kh"><span>💰 รายได้</span><em class="pc" id="pc-rev"></em></div><div class="kb"><b id="k-rev"></b><span id="s-rev"></span></div></div>
+          <div class="kc"><div class="kh"><span>🛎️ การให้บริการ</span><em class="pc" id="pc-n"></em></div><div class="kb"><b id="k-n"></b><span id="s-n"></span></div></div>
+          <div class="kc"><div class="kh"><span>🧾 ราคาเฉลี่ยต่อคิว</span><em class="pc" id="pc-avg"></em></div><div class="kb"><b id="k-avg"></b><span id="s-avg"></span></div></div>
+          <div class="kc"><div class="kh"><span>🐾 สัตว์เลี้ยงที่มาใช้บริการ</span><em class="pc" id="pc-pets"></em></div><div class="kb"><b id="k-pets"></b><span id="s-pets"></span></div></div>
+          <div class="kc"><div class="kh"><span>❌ ยกเลิกคิว</span><em class="pc" id="pc-cancel"></em></div><div class="kb"><b id="k-cancel"></b><span id="s-cancel"></span></div></div>
+          <div class="kc"><div class="kh"><span>⏳ ค้างชำระ</span><em class="pc" id="pc-unpaid"></em></div><div class="kb"><b id="k-unpaid"></b><span id="s-unpaid"></span></div></div>
+        </div>
+        <div class="two">
+          <div class="panel">
+            <h2 style="font-size:18px" id="chartTitle">รายได้รายวัน</h2>
+            <div class="chart" id="chart" role="img" aria-label="กราฟรายได้"></div>
+            <div style="height:24px"></div>
+          </div>
+          <div class="panel">
+            <h2 style="font-size:18px;margin-bottom:16px">บริการยอดนิยม</h2>
+            <div id="topList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- จองคิว -->
+      <section id="v-book" hidden>
+        <div class="bar"><h2 style="font-size:16px">คิวที่จองไว้</h2><button class="btn" id="btnBook">+ จองคิวใหม่</button></div>
+        <div class="tw">
+          <table id="bookTable"><thead><tr><th>วันที่</th><th>เวลา</th><th>สัตว์เลี้ยง</th><th>บริการ</th><th>ราคา</th><th></th></tr></thead><tbody id="bookRows"></tbody></table>
+          <div class="empty" id="bookEmpty">ยังไม่มีคิวที่จองไว้ กด “จองคิวใหม่” เพื่อเริ่มต้น</div>
+        </div>
+      </section>
+
+      <!-- คิวและสถานะ -->
+      <section id="v-queue" hidden>
+        <div class="bar"><h2 style="font-size:16px">คิวและสถานะการให้บริการ</h2><input type="date" id="qdate" style="width:auto" aria-label="เลือกวันที่"></div>
+        <div class="tw">
+          <table id="queueTable"><thead><tr><th>เวลา</th><th>สัตว์เลี้ยง</th><th>บริการ</th><th>สถานะ</th><th>ดำเนินการ</th></tr></thead><tbody id="queueRows"></tbody></table>
+          <div class="empty" id="queueEmpty">วันนี้ยังไม่มีคิว ไปที่ “จองคิว” เพื่อเพิ่มคิวใหม่</div>
+        </div>
+      </section>
+
+      <!-- การชำระเงิน -->
+      <section id="v-pay" hidden>
+        <div class="rng" role="group" aria-label="ช่วงเวลา">
+          <button data-frange="today">วันนี้</button>
+          <button data-frange="week">สัปดาห์</button>
+          <button data-frange="month">เดือน</button>
+        </div>
+        <div class="kg" id="payKpi"></div>
+        <div class="bar"><h2 style="font-size:16px">ค้างชำระ</h2><span class="mute" id="owedSum"></span></div>
+        <div class="tw">
+          <table id="owedTable"><thead><tr><th>วันที่</th><th>สัตว์เลี้ยง</th><th>บริการ</th><th>ยอดค้าง</th><th></th></tr></thead><tbody id="owedRows"></tbody></table>
+          <div class="empty" id="owedEmpty">ไม่มีรายการค้างชำระ</div>
+        </div>
+        <div class="bar" style="margin-top:24px"><h2 style="font-size:16px">ใบเสร็จที่ออกแล้ว</h2></div>
+        <div class="tw">
+          <table id="payTable"><thead><tr><th>เลขที่</th><th>วันที่ชำระ</th><th>สัตว์เลี้ยง / บริการ</th><th>วิธีชำระ</th><th>ยอด</th><th></th></tr></thead><tbody id="payRows"></tbody></table>
+          <div class="empty" id="payEmpty">ยังไม่มีการชำระเงินในช่วงนี้</div>
+        </div>
+      </section>
+
+      <!-- ลูกค้าและสัตว์เลี้ยง -->
+      <section id="v-cust" hidden>
+        <div class="bar"><h2 style="font-size:16px">ข้อมูลลูกค้าและสัตว์เลี้ยง</h2><button class="btn" id="btnCust">+ เพิ่มลูกค้า</button></div>
+        <div class="grid" id="custGrid"></div>
+        <div class="empty" id="custEmpty">ยังไม่มีลูกค้า กด “เพิ่มลูกค้า”</div>
+      </section>
+
+      <!-- บริการและราคา -->
+      <section id="v-svc" hidden>
+        <div class="bar"><h2 style="font-size:16px">บริการและราคา</h2><button class="btn" id="btnSvc">+ เพิ่มบริการ</button></div>
+        <div class="tw">
+          <table id="svcTable"><thead><tr><th>บริการ</th><th>ราคา</th><th></th></tr></thead><tbody id="svcRows"></tbody></table>
+          <div class="empty" id="svcEmpty">ยังไม่มีบริการ กด “เพิ่มบริการ”</div>
+        </div>
+      </section>
+
+      <!-- ประวัติการใช้บริการ -->
+      <section id="v-hist" hidden>
+        <div class="bar"><h2 style="font-size:16px">ประวัติการใช้บริการ</h2><select id="histPet" style="width:auto;max-width:100%" aria-label="เลือกสัตว์เลี้ยง"></select></div>
+        <div class="tw">
+          <table id="histTable"><thead><tr><th>วันที่</th><th>สัตว์เลี้ยง</th><th>บริการ</th><th>บันทึก</th><th>ชำระเงิน</th></tr></thead><tbody id="histRows"></tbody></table>
+          <div class="empty" id="histEmpty">ยังไม่มีประวัติการใช้บริการ</div>
+        </div>
+        <p class="mute" id="histSum"></p>
+      </section>
+
+      <p class="mute" style="margin-top:24px">ข้อมูลเก็บใน Supabase (PostgreSQL)</p>
+    </main>
+  </div>
+</div>
+
+<dialog id="dlg"></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
